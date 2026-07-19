@@ -59,8 +59,9 @@ def fetch_ranking_item(genre_id: str) -> dict:
         "affiliateId": RAKUTEN_AFFILIATE_ID,
         "accessKey": RAKUTEN_ACCESS_KEY,
     }
-    res = requests.get(RAKUTEN_RANKING_URL, params=params, timeout=15)
-    res.raise_for_status()
+res = requests.get(RAKUTEN_RANKING_URL, params=params, timeout=15)
+    if not res.ok:
+        raise RuntimeError(f"楽天APIエラー: {res.status_code} {res.text}")
     data = res.json()
 
     items = data.get("Items", [])
