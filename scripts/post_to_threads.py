@@ -8,7 +8,7 @@ Typefully側のスケジュール投稿機能で21時に自動公開される想
 必要な環境変数(GitHub Secretsから渡される):
   RAKUTEN_APP_ID        楽天アプリID
   RAKUTEN_AFFILIATE_ID  楽天アフィリエイトID
-  RAKUTEN_ACCESS_KEY    楽天アクセスキー(現状未使用だが将来のため保持)
+  RAKUTEN_ACCESS_KEY    楽天アクセスキー
   TYPEFULLY_API_KEY     Typefully APIキー
   MY_REGISTERED_URL     登録済みの自分のサイトURL(必要に応じ利用)
 """
@@ -21,9 +21,10 @@ import requests
 
 RAKUTEN_APP_ID = os.environ["RAKUTEN_APP_ID"]
 RAKUTEN_AFFILIATE_ID = os.environ["RAKUTEN_AFFILIATE_ID"]
+RAKUTEN_ACCESS_KEY = os.environ["RAKUTEN_ACCESS_KEY"]
 TYPEFULLY_API_KEY = os.environ["TYPEFULLY_API_KEY"]
 
-RAKUTEN_RANKING_URL = "https://app.rakuten.co.jp/services/api/IchibaItem/Ranking/20220601"
+RAKUTEN_RANKING_URL = "https://openapi.rakuten.co.jp/ichibaranking/api/IchibaItem/Ranking/20220601"
 TYPEFULLY_DRAFTS_URL = "https://api.typefully.com/v1/drafts/"
 
 # 曜日ごとのジャンルローテーション(0=月曜 ... 6=日曜)
@@ -56,7 +57,7 @@ def fetch_ranking_item(genre_id: str) -> dict:
         "genreId": genre_id,
         "applicationId": RAKUTEN_APP_ID,
         "affiliateId": RAKUTEN_AFFILIATE_ID,
-        "period": "realtime",
+        "accessKey": RAKUTEN_ACCESS_KEY,
     }
     res = requests.get(RAKUTEN_RANKING_URL, params=params, timeout=15)
     res.raise_for_status()
@@ -75,7 +76,6 @@ def build_post_text(item: dict, genre_name: str) -> str:
     catch_copy = item.get("catchcopy", "").strip()
     affiliate_url = item.get("affiliateUrl") or item.get("itemUrl")
 
-    # Threadsの文字数制限(500文字)を考慮して商品名を適度に切る
     if len(item_name) > 60:
         item_name = item_name[:60] + "…"
 
@@ -106,7 +106,6 @@ def create_typefully_draft(content: str, schedule_date_iso: str) -> dict:
 
 
 def main():
-    # JST基準の曜日を使う(GitHub Actionsのランナーは通常UTC)
     now_jst = datetime.datetime.utcnow() + datetime.timedelta(hours=9)
     weekday = now_jst.weekday()
     genre = GENRE_ROTATION[weekday]
@@ -118,7 +117,6 @@ def main():
     print("[INFO] 生成した投稿文:")
     print(text)
 
-    # 本日21:00 JST を Typefully に渡すISO日時に変換(UTC表記)
     schedule_dt_jst = now_jst.replace(hour=21, minute=0, second=0, microsecond=0)
     schedule_dt_utc = schedule_dt_jst - datetime.timedelta(hours=9)
     schedule_iso = schedule_dt_utc.strftime("%Y-%m-%dT%H:%M:%SZ")
