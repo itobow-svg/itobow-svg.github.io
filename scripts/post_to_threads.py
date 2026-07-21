@@ -23,6 +23,7 @@ RAKUTEN_APP_ID = os.environ["RAKUTEN_APP_ID"]
 RAKUTEN_AFFILIATE_ID = os.environ["RAKUTEN_AFFILIATE_ID"]
 RAKUTEN_ACCESS_KEY = os.environ["RAKUTEN_ACCESS_KEY"]
 TYPEFULLY_API_KEY = os.environ["TYPEFULLY_API_KEY"]
+MY_REGISTERED_URL = os.environ["MY_REGISTERED_URL"]
 
 RAKUTEN_RANKING_URL = "https://openapi.rakuten.co.jp/ichibaranking/api/IchibaItem/Ranking/20220601"
 TYPEFULLY_DRAFTS_URL = "https://api.typefully.com/v1/drafts/"
