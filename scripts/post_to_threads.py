@@ -60,7 +60,9 @@ def fetch_ranking_item(genre_id: str) -> dict:
         "accessKey": RAKUTEN_ACCESS_KEY,
     }
     headers = {"Referer": MY_REGISTERED_URL}
-    print("[DEBUG] Referer送信値: '" + MY_REGISTERED_URL + "'")
+    print("[DEBUG] Referer文字数: " + str(len(MY_REGISTERED_URL)))
+    print("[DEBUG] Referer先頭5文字: " + MY_REGISTERED_URL[:5])
+    print("[DEBUG] Referer末尾5文字: " + MY_REGISTERED_URL[-5:])
     res = requests.get(RAKUTEN_RANKING_URL, params=params, headers=headers, timeout=15)
     if not res.ok:
         raise RuntimeError(f"楽天APIエラー: {res.status_code} {res.text}")
