@@ -59,7 +59,7 @@ def fetch_ranking_item(genre_id: str) -> dict:
         "affiliateId": RAKUTEN_AFFILIATE_ID,
         "accessKey": RAKUTEN_ACCESS_KEY,
     }
-res = requests.get(RAKUTEN_RANKING_URL, params=params, timeout=15)
+    res = requests.get(RAKUTEN_RANKING_URL, params=params, timeout=15)
     if not res.ok:
         raise RuntimeError(f"楽天APIエラー: {res.status_code} {res.text}")
     data = res.json()
@@ -69,7 +69,6 @@ res = requests.get(RAKUTEN_RANKING_URL, params=params, timeout=15)
         raise RuntimeError(f"ジャンルID {genre_id} のランキング結果が空です")
 
     return items[0]["Item"]
-
 
 def build_post_text(item: dict, genre_name: str) -> str:
     """テンプレートに商品情報を差し込んで投稿文を作る"""
