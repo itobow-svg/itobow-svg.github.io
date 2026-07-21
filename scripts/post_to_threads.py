@@ -71,7 +71,7 @@ def fetch_ranking_item(genre_id: str) -> dict:
         raise RuntimeError(f"ジャンルID {genre_id} のランキング結果が空です")
 
     return items[0]["Item"]
-  def create_typefully_draft(content: str, schedule_date_iso: str) -> dict:
+  　def create_typefully_draft(content: str, schedule_date_iso: str) -> dict:
     """Typefullyに下書き(スケジュール指定)を作成する"""
     headers = {
         "X-API-KEY": TYPEFULLY_API_KEY,
