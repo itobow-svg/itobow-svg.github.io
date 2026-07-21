@@ -15,7 +15,6 @@ Typefully側のスケジュール投稿機能で21時に自動公開される想
 
 import os
 import sys
-import random
 import datetime
 import requests
 
@@ -71,7 +70,28 @@ def fetch_ranking_item(genre_id: str) -> dict:
         raise RuntimeError(f"ジャンルID {genre_id} のランキング結果が空です")
 
     return items[0]["Item"]
-  　def create_typefully_draft(content: str, schedule_date_iso: str) -> dict:
+
+
+def build_post_text(item: dict, genre_name: str) -> str:
+    """テンプレートに商品情報を差し込んで投稿文を作る"""
+    item_name = item.get("itemName", "").strip()
+    catch_copy = item.get("catchcopy", "").strip()
+    affiliate_url = item.get("affiliateUrl") or item.get("itemUrl")
+
+    if len(item_name) > 60:
+        item_name = item_name[:60] + "…"
+    if len(catch_copy) > 80:
+        catch_copy = catch_copy[:80] + "…"
+
+    return TEMPLATE.format(
+        item_name=item_name,
+        catch_copy=catch_copy,
+        affiliate_url=affiliate_url,
+        genre_name=genre_name,
+    )
+
+
+def create_typefully_draft(content: str, schedule_date_iso: str) -> dict:
     """Typefullyに下書き(スケジュール指定)を作成する"""
     headers = {
         "X-API-KEY": TYPEFULLY_API_KEY,
