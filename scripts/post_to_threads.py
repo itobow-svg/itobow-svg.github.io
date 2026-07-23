@@ -59,7 +59,7 @@ def fetch_ranking_item(genre_id: str) -> dict:
         "affiliateId": RAKUTEN_AFFILIATE_ID,
         "accessKey": RAKUTEN_ACCESS_KEY,
     }
-    headers = {"Referer": MY_REGISTERED_URL}
+    headers = {"Referer": MY_REGISTERED_URL.strip()}
     res = requests.get(RAKUTEN_RANKING_URL, params=params, headers=headers, timeout=15)
     print("[DEBUG] 実際に送られたヘッダー: " + str(dict(res.request.headers)))
     if not res.ok:
